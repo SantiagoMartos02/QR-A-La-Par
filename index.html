@@ -41,12 +41,28 @@
   a.btn svg{width:22px;height:22px;flex:none}
   a.primary{background:var(--sage); color:#fff; border:1px solid var(--sage)}
   a.primary:hover{background:var(--sage-dark)}
-  a.secondary{background:transparent; color:var(--ink); border:1px solid var(--gold)}
+  a.secondary{background:var(--bg); color:var(--ink); border:1px solid var(--gold)}
   a.secondary:hover{background:#f3ecdc}
   a.btn:active{transform:scale(.98)}
   a.btn:focus-visible{outline:3px solid var(--gold); outline-offset:3px}
   @media (prefers-reduced-motion:reduce){a.btn{transition:none}}
-  details.hours{border:1px solid var(--gold); border-radius:4px}
+  main{position:relative; z-index:1}
+  .bubbles{position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0}
+  .bubbles span{
+    position:absolute; bottom:-40px; left:var(--x); width:var(--s); height:var(--s); border-radius:50%;
+    background:radial-gradient(circle at 30% 28%, rgba(255,255,255,.95) 0 14%, rgba(176,141,74,.10) 40%, rgba(176,141,74,.04) 100%);
+    border:1px solid rgba(176,141,74,.38);
+    opacity:0; animation:rise var(--d) linear var(--delay) infinite; will-change:transform,opacity;
+  }
+  @keyframes rise{
+    0%{transform:translate3d(0,0,0); opacity:0}
+    8%{opacity:var(--o)}
+    50%{transform:translate3d(var(--dx),-58vh,0)}
+    92%{opacity:var(--o)}
+    100%{transform:translate3d(0,-120vh,0); opacity:0}
+  }
+  @media (prefers-reduced-motion:reduce){.bubbles{display:none}}
+  details.hours{border:1px solid var(--gold); border-radius:4px; background:var(--bg)}
   details.hours summary{
     position:relative; list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:12px;
     min-height:60px; padding:0 20px; font-size:1.1rem; font-weight:500;
@@ -64,6 +80,7 @@
 </style>
 </head>
 <body>
+<div class="bubbles" id="bubbles" aria-hidden="true"></div>
 <main>
   <h1>A La Par Espumantes</h1>
   <div class="rule" aria-hidden="true"></div>
@@ -97,5 +114,24 @@
   <div class="rule" aria-hidden="true" style="margin-top:34px"></div>
   <address style="font-style:normal;font-family:'Playfair Display',Georgia,serif;font-size:1.1rem">Calle Orsili 436, General Alvear</address>
 </main>
+<script>
+(function(){
+  try{
+    var box=document.getElementById('bubbles'); if(!box) return;
+    var n=window.innerWidth<600?18:26, r=Math.random, i, b;
+    for(i=0;i<n;i++){
+      b=document.createElement('span');
+      var size=6+r()*20;
+      b.style.setProperty('--x',(r()*100)+'%');
+      b.style.setProperty('--s',size+'px');
+      b.style.setProperty('--d',(9+r()*10)+'s');
+      b.style.setProperty('--delay',(-r()*18)+'s');
+      b.style.setProperty('--dx',((r()*2-1)*36)+'px');
+      b.style.setProperty('--o',(.35+r()*.45).toFixed(2));
+      box.appendChild(b);
+    }
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
